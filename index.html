@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+	<meta char='UTF-8'>
+	<title>Ticketing</title>
+	<style type="text/css">
+	
+	* {
+		margin: 0;
+		padding: 0;
+		font-family: helvetica;
+	}	
+	.seat {
+		width: 50px;
+		height: 50px;
+		display: inline-block;
+	}
+
+	.available {
+		background-color: green;
+	}
+
+	.unavailable {
+		background-color: gray;
+
+	}
+	
+	.selected {
+		background-color: yellow;
+	}
+	</style>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	<script>
+	$(document).ready(function(){
+		$('.available').click(function(){
+			$(this).toggleClass("available");
+			$(this).toggleClass("selected");
+		});
+	});
+	</script>
+</head>
+<body>
+
+<div class='wrapper'>
+	<div class='table'>
+		<div id='1' class='seat unavailable'>
+			<p>1</p>
+		</div>
+		<div id='2' class='seat unavailable'>
+			<p>2</p>
+		</div>
+		<div id='3' class='seat available'>
+			<p>3</p>
+		</div>
+		<div id='4' class='seat available'>
+			<p>4</p>
+		</div>
+	</div>
+</div>
+</body>
+</html>
