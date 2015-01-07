@@ -1,0 +1,119 @@
+https://developer.paypal.com/docs/integration/web/web-checkout/
+https://github.com/paypal/PayPal-PHP-SDK
+https://www.youtube.com/watch?v=JL19jwrSEfI
+
+0. Install PaypalSDK
+1. Get an OAuth access token
+2. Add paypal buttons to your site
+	Create a payment
+	Receiev a payment call response
+3. Get a payment approval and return user
+4. Execute payment request
+
+01 GET OAuth Access Token
+
+$sdkConfig = array(
+  "mode" => "sandbox"
+);
+
+$cred = new OAuthTokenCredential("AQaWvBDf74b9DHui9gfAEmcJnXgIqtENiSbHzY64XKIBe0HfJYyyXAR_C1Z6","EOTuwRA5yC8kt9ehNjmxEEMOWqtawNnsgIf158bI36acC_DklTRGo910LkBa", $sdkConfig);
+
+api.sandbox.paypal.com
+
+
+02 ADD PAYPAL BUTTON
+<a href="/youraction" data-paypal-button="true">
+  <img src="//www.paypalobjects.com/en_US/i/btn/btn_xpressCheckout.gif" alt="Check out with PayPal" />
+</a>
+
+CREATE A PAYMENT
+$sdkConfig = array(
+  "mode" => "sandbox"
+);
+
+$cred = "Bearer <<access_token>>";
+$apiContext = new ApiContext($cred, 'Request' . time());
+$apiContext->setConfig($sdkConfig);
+
+$payer = new Payer();
+$payer->setPayment_method("paypal");
+
+$amount = new Amount();
+$amount->setCurrency("USD");
+$amount->setTotal("12");
+
+$transaction = new Transaction();
+$transaction->setDescription("creating a payment");
+$transaction->setAmount($amount);
+
+$baseUrl = getBaseUrl();
+$redirectUrls = new RedirectUrls();
+$redirectUrls->setReturn_url("https://devtools-paypal.com/guide/pay_paypal/php?success=true");
+$redirectUrls->setCancel_url("https://devtools-paypal.com/guide/pay_paypal/php?cancel=true");
+
+$payment = new Payment();
+$payment->setIntent("sale");
+$payment->setPayer($payer);
+$payment->setRedirect_urls($redirectUrls);
+$payment->setTransactions(array($transaction));
+
+$payment->create($apiContext);
+
+RECEIVE A PAYMENT CALL RESPONSE
+{
+  "id": "PAY-6RV70583SB702805EKEYSZ6Y",
+  "create_time": "2013-03-01T22:34:35Z",
+  "update_time": "2013-03-01T22:34:36Z",
+  "state": "created",
+  "intent": "sale",
+  "payer": {
+    "payment_method": "paypal"
+  },
+  "transactions": [
+    {
+      "amount": {
+        "total": "7.47",
+        "currency": "USD",
+        "details": {
+          "subtotal": "7.47"
+        }
+      },
+      "description": "This is the payment transaction description."
+    }
+  ],
+  "links": [
+    {
+      "href": "https://api.sandbox.paypal.com/v1/payments/payment/PAY-6RV70583SB702805EKEYSZ6Y",
+      "rel": "self",
+      "method": "GET"
+    },
+    {
+      "href": "https://www.sandbox.paypal.com/webscr?cmd=_express-checkout&token=EC-60U79048BN7719609",
+      "rel": "approval_url",
+      "method": "REDIRECT"
+    },
+    {
+      "href": "https://api.sandbox.paypal.com/v1/payments/payment/PAY-6RV70583SB702805EKEYSZ6Y/execute",
+      "rel": "execute",
+      "method": "POST"
+    }
+  ]
+}
+
+03 GET PAYMENT APPROVAL AND RETURN USER
+04 EXECUTE PAYMENT REQUEST
+$sdkConfig = array(
+  "mode" => "sandbox"
+);
+
+$cred = "Bearer <<access_token>>";
+$apiContext = new ApiContext($cred, 'Request' . time());
+$apiContext->setConfig($sdkConfig);
+
+$payment = new Payment("<<payment id>>");
+$execution = new PaymentExecution();
+$execution->setPayer_id("<<PayerId>>");
+$payment->execute($execution, $apiContext);
+
+---SDK INSTALLATION---
+Composer

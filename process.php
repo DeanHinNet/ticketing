@@ -1,5 +1,6 @@
 <?php
 session_start();
+require 'vendor/autoload.php';
 require('new-connection.php');
 
 function get_seats(){
